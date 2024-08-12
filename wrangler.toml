@@ -1,0 +1,10 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "hn-pages"
+compatibility_date = "2024-05-24"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB" # available in your Worker on env.DB
+database_name = "leaf-d1"
+database_id = "9040655e-6fbd-425e-bd24-5c7529bf82d7"
