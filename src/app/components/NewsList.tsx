@@ -2,7 +2,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import NewsItem from './NewsItem';
-import dbManager from '../utils/dbManager';
 import { News } from '../common/types';
 
 
@@ -20,10 +19,9 @@ export default function NewsList() {
 
   return (
     <div className="p-4">
-      {newsList.map(news=> (
-        <NewsItem key={news.id} news={news} />
+      {newsList.map((news, index) => (
+        <NewsItem key={news.id} news={news} defaultExpanded={index < 3} />
       ))}
     </div>
   );
 };
-

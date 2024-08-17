@@ -4,11 +4,12 @@ import { USER_URL_PREFIX, ITEM_URL_PREFIX } from '../common/constants';
 
 interface NewsItemProps {
   news: News;
+  defaultExpanded: boolean;
 }
 
 
-export default function NewsItem({ news }: NewsItemProps) {
-  const [isExpanded, setIsExpanded] = React.useState(false);
+export default function NewsItem({ news, defaultExpanded }: NewsItemProps) {
+  const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -18,7 +19,7 @@ export default function NewsItem({ news }: NewsItemProps) {
     <div className="border-b border-gray-300 py-4">
       <div className="flex items-center">
         <button onClick={toggleExpanded} className='mr-2'>
-          {isExpanded ? '▲' : '▼'}
+          {isExpanded ? ' ▲ ' : ' ▼ '}
         </button>
 
         <a href={news.url} className="text-lg font-semibold text-blue-600 hover:underline">{news.title}</a>

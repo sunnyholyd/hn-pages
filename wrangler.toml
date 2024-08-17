@@ -8,3 +8,7 @@ pages_build_output_dir = ".vercel/output/static"
 binding = "DB" # available in your Worker on env.DB
 database_name = "leaf-d1"
 database_id = "9040655e-6fbd-425e-bd24-5c7529bf82d7"
+
+
+[placement]
+mode = "smart"
