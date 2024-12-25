@@ -2,35 +2,19 @@ import type { NextRequest } from 'next/server'
 import { getRequestContext } from '@cloudflare/next-on-pages'
 import dbManager from '@/app/utils/dbManager'
 import type { ShowListItem , News} from '@/app/common/types'
+import { updateNewsCache } from '@/app/utils/cache'
+// 缓存变量
+let cachedNewsList: News[] | null = null;
 
 export const runtime = 'edge'
 
 export async function GET(request: NextRequest) {
-  // select list
-  const itemList = await dbManager.selectShowList(getRequestContext().env.DB);
-
-  const newsList: News[] = [];
-  for (const item of itemList) {
-    console.log(item);
-    // select hnitem
-    const hnitem = await dbManager.selectHnItem(getRequestContext().env.DB, item.item_id);
-    // select shepherditems 
-    const shepherditem = await dbManager.selectShepherdItem(getRequestContext().env.DB, item.item_id);
-
-    if (hnitem) {
-      const news: News = {
-        id: item.item_id,
-        title: shepherditem ? shepherditem.title : hnitem.title,
-        url: hnitem.url,
-        score: hnitem.score,
-        descendants: hnitem.descendants,
-        by: hnitem.by,
-        intro: shepherditem ? shepherditem.intro : "",
-        cmt_summary: shepherditem ? shepherditem.cmt_summary : [],
-      }
-      newsList.push(news);
-    }
+  // 如果缓存不存在，等待首次更新
+  if (!cachedNewsList) {
+    console.log('cachedNewsList is null, start first updateCache.');
+    cachedNewsList = await updateNewsCache(cachedNewsList, getRequestContext().env.DB);
   }
-
-  return Response.json(newsList);
+  
+  return Response.json(cachedNewsList);
 }
+

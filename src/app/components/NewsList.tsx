@@ -20,7 +20,7 @@ export default function NewsList() {
   return (
     <div className="p-4">
       {newsList.map((news, index) => (
-        <NewsItem key={news.id} news={news} defaultExpanded={index < 3} />
+        <NewsItem key={news.id} news={news} defaultExpanded={index < 1} />
       ))}
     </div>
   );
