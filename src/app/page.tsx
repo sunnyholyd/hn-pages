@@ -6,7 +6,6 @@ export default function Home() {
   return (
     <main>
       <div>
-        <Header />
         <NewsList />
       </div>
     </main>
