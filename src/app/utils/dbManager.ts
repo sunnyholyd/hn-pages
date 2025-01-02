@@ -3,6 +3,12 @@ import * as Constants from '../common/constants';
 import { ShowListItem, ShepherdItem } from '../common/types';
 import { ShepherdItemImpl } from "../common/SheperdItemImpl";
 
+async function query(db: D1Database, sql: string, params?: any[]) {
+  const stmt = params ? db.prepare(sql).bind(...params) : db.prepare(sql);
+  const { results } = await stmt.all();
+  return results;
+}
+
 async function limitSelect(db: D1Database, tableName: string, limit: number = 100) {
   const { results } = await db.prepare(`SELECT * FROM ${tableName} limit ${limit}`).all();
   return results;
@@ -51,6 +57,7 @@ async function selectAllComments(db: D1Database, parent_id: number): Promise<Sim
 
 
 export default {
+  query,
   limitSelect,
   selectHnItem,
   selectAllComments,

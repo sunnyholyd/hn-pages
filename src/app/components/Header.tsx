@@ -2,8 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 
 export default function Header() {
-  const months = [
-    { label: '2024年11月', path: '/monthly/2024-03' },
+  const navs = [
+    { label: '月度热门', path: '/monthly-top' },
   ];
 
   return (
@@ -21,15 +21,13 @@ export default function Header() {
               News
             </Link>
             <span className="text-white/90 text-sm mx-2">·</span>
-            <span className="text-white/90 text-sm">Summary</span>
-            {months.map((month) => (
-              <React.Fragment key={month.path}>
-                <span className="text-white/90 text-sm mx-2">·</span>
+            {navs.map((nav) => (
+              <React.Fragment key={nav.path}>
                 <Link
-                  href={month.path}
+                  href={nav.path}
                   className="text-sm text-white/90 hover:text-white"
                 >
-                  {month.label}
+                  {nav.label}
                 </Link>
               </React.Fragment>
             ))}

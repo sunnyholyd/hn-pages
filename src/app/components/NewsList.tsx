@@ -5,17 +5,7 @@ import NewsItem from './NewsItem';
 import { News } from '../common/types';
 
 
-export default function NewsList() {
-  const [newsList, setNewsList] = useState<News[]>([]);
-
-  useEffect(() => {
-    fetch('/api/show')
-      .then(response => response.json<News[]>())
-      .then(newsList => {
-        setNewsList(newsList);
-      });
-  }, []);
-
+export default function NewsList({ newsList }: { newsList: News[] }) {
 
   return (
     <div className="p-4">

@@ -3,5 +3,6 @@
 
 interface CloudflareEnv {
 	DB: D1Database;
+	HN_CACHE: KVNamespace;
 }
 

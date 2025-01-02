@@ -9,6 +9,9 @@ binding = "DB" # available in your Worker on env.DB
 database_name = "leaf-d1"
 database_id = "9040655e-6fbd-425e-bd24-5c7529bf82d7"
 
+[[kv_namespaces]]
+binding = "HN_CACHE"
+id = "f98f57ca76b44edb95d339775fbb52da"
 
 [placement]
 mode = "smart"

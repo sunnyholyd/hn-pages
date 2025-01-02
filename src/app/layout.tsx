@@ -28,8 +28,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Scripts />
-        <Header />
-        {children}
+        <div className="max-w-6xl mx-auto">
+          <Header />
+          {children}
+        </div>
       </body>
     </html>
   );

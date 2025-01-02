@@ -17,16 +17,15 @@ export default function NewsItem({ news, defaultExpanded }: NewsItemProps) {
 
   return (
     <div className="border-b border-gray-300 py-4">
-      <div className="flex items-center">
-        <button onClick={toggleExpanded} className='mr-2'>
-          {isExpanded ? ' ▲ ' : ' ▼ '}
-        </button>
-
-        <a href={news.url} className="text-lg font-semibold text-blue-600 hover:underline">{news.title}</a>
+      <div className=" hover:bg-gray-100 hover:cursor-pointer" onClick={toggleExpanded}>
+        <div className="flex items-center">
+          <span className='mr-2'> {isExpanded ? ' ▲ ' : ' ▼ '} </span>
+          <a href={news.url} onClick={(e) => e.stopPropagation()} className="text-lg font-semibold text-blue-600 hover:underline">{news.title}</a>
+        </div>
+        <p className="text-sm text-gray-600">
+          {news.score} points | by <a href={USER_URL_PREFIX + news.by} onClick={(e) => e.stopPropagation()} className="hover:underline">{news.by}</a> | <a href={ITEM_URL_PREFIX + news.id} className="hover:underline">{news.descendants} comments</a>
+        </p>
       </div>
-      <p className="text-sm text-gray-600">
-        {news.score} points | by <a href={USER_URL_PREFIX + news.by} className="hover:underline">{news.by}</a> | <a href={ITEM_URL_PREFIX + news.id} className="hover:underline">{news.descendants} comments</a>
-      </p>
 
       {isExpanded && news.intro && (
         <div className="mt-2 p-2 bg-gray-100 rounded">
