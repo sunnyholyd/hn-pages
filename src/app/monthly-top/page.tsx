@@ -26,7 +26,7 @@ export default function Page({
     <div>
       <div className="text-sm text-gray-600 border-b">
         <div className="py-2">
-          {selectedMonth} 月度热门文章
+          {selectedMonth}月 热门TOP10排行榜，根据评论数进行排名，看看全世界的极客们最关心最在意的是什么。
         </div>
       </div>
       <div>

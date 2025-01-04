@@ -2,8 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-
-const monthSet = ['2025-01', '2024-12', '2024-11', '2024-10', '2024-09', '2024-08'];
+import { MONTH_SET } from "../common/constants";
 
 export default function MonthlyTopLayout({
   children,
@@ -13,8 +12,10 @@ export default function MonthlyTopLayout({
   const router = useRouter();
   const pathname = usePathname();
 
+  const month = new URLSearchParams(window.location.search).get('month') || MONTH_SET[0];
+
   useEffect(() => {
-    router.push(`${pathname}?month=${monthSet[0]}`);
+    router.push(`${pathname}?month=${month}`);
   }, [pathname]);
 
   return (
@@ -27,8 +28,9 @@ export default function MonthlyTopLayout({
             onChange={(e) => {
               router.push(`${pathname}?month=${e.target.value}`);
             }}
+            defaultValue={month}
           >
-            {monthSet.map((month) => (
+            {MONTH_SET.map((month) => (
               <option key={month} value={month}>{month}</option>
             ))}
           </select>

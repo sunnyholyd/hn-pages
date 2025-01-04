@@ -12,8 +12,7 @@ export async function GET(request: NextRequest) {
     //   return new Response('Unauthorized', { status: 401 });
     // }
 
-    console.log('try to updateCache.');
-
+    console.log('try to update newslist cache.');
     await updateNewsCache(null, getRequestContext().env.DB);
     return new Response('Cache updated successfully', { status: 200 });
   } catch (error) {
