@@ -1,9 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function Header() {
+  const locale = useLocale();
+  const t = useTranslations('Header');
   const navs = [
-    { label: '月度热门', path: '/monthly-top' },
+    { label: t('monthlyTop'), path: `/${locale}/monthly-top` },
   ];
 
   return (
@@ -12,13 +15,13 @@ export default function Header() {
         <div className="h-16 flex items-center">
           {/* 左侧主标题 */}
           <Link href="/" className="text-white font-bold text-xl mr-8">
-            Hacker News
+            {t('title')}
           </Link>
 
           {/* 导航 */}
           <nav className="flex items-center space-x-4">
             <Link href="/" className="text-white/90 hover:text-white text-sm">
-              News
+              {t('news')}
             </Link>
             <span className="text-white/90 text-sm mx-2">·</span>
             {navs.map((nav) => (
