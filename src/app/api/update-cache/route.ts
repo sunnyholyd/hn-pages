@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     // }
 
     console.log('try to update newslist cache.');
-    await updateNewsCache(null, getRequestContext().env.DB);
+    await updateNewsCache(getRequestContext().env, 'en');
     return new Response('Cache updated successfully', { status: 200 });
   } catch (error) {
     console.error('Cache update failed:', error);

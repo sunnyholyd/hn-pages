@@ -1,7 +1,8 @@
-import { HnItem, SimpleComment } from "../common/types";
-import * as Constants from '../common/constants';
-import { ShowListItem, ShepherdItem } from '../common/types';
-import { ShepherdItemImpl } from "../common/SheperdItemImpl";
+import { AiSummaryOutput, HnItem, SimpleComment, WritableAiSummaryItem } from "../commons/types";
+import * as Constants from '../commons/constants';
+import { ShowListItem, ShepherdItem } from '../commons/types';
+import { ShepherdItemImpl } from "../commons/SheperdItemImpl";
+import { fromWritableAiSummaryItem } from "../utils/typeUtils";
 
 async function query(db: D1Database, sql: string, params?: any[]) {
   const stmt = params ? db.prepare(sql).bind(...params) : db.prepare(sql);
@@ -29,6 +30,12 @@ async function selectShepherdItem(db: D1Database, id: number) {
   const stmt = selectSingleStmt(db, Constants.ITEMS_SHEPHERD_TABLE, id);
   const result = await (await stmt).first<ShepherdItem>();
   return result ? new ShepherdItemImpl(result) : null;
+}
+
+async function selectAiSummaryItem(db: D1Database, id: number, tableName: string) {
+  const stmt = selectSingleStmt(db, tableName, id);
+  const result = await (await stmt).first<WritableAiSummaryItem>();
+  return result ? fromWritableAiSummaryItem(result) : null;
 }
 
 async function selectHnItem(db: D1Database, id: number) {
@@ -62,5 +69,6 @@ export default {
   selectHnItem,
   selectAllComments,
   selectShowList,
-  selectShepherdItem
+  selectShepherdItem,
+  selectAiSummaryItem
 }

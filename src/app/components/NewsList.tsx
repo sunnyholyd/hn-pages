@@ -2,7 +2,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import NewsItem from './NewsItem';
-import { News } from '../common/types';
+import { News } from '../commons/types';
 
 
 export default function NewsList({ newsList }: { newsList: News[] }) {

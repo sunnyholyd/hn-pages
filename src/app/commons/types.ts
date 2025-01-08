@@ -32,6 +32,27 @@ export interface ShepherdItem {
   getWritableShepherdItem(): any;
 }
 
+export interface AiSummaryOutput {
+  title: string;
+  introduction: string;
+  tags: string[];
+  positiveCommentsSummary: string;
+  negativeCommentsSummary: string;
+  valuableInformation: string[];
+  extra?: string;
+}
+
+export interface WritableAiSummaryItem {
+  id?: number;
+  seo_title: string;
+  intro: string;
+  tags: string;
+  positive_summary: string;
+  negative_summary: string;
+  valuable_information: string;
+  extra?: string;
+}
+
 export interface ShowListItem {
   id: number;
   item_id: number;
@@ -45,5 +66,9 @@ export interface News {
   score?: number;
   descendants?: number;
   intro: string;
-  cmt_summary: string[];
+  tags: string[];
+  positive_summary: string;
+  negative_summary: string;
+  valuable_information: string[];
+  extra?: string;
 }

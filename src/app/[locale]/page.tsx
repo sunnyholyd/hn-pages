@@ -2,15 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import NewsList from '@/app/components/NewsList';
-import { News } from '@/app/common/types';
-import { useTranslations } from 'next-intl';
+import { News } from '@/app/commons/types';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function Home() {
+  const locale = useLocale();
   const t = useTranslations('HomePage');
   const [newsList, setNewsList] = useState<News[]>([]);
 
   useEffect(() => {
-    fetch('/api/show')
+    fetch('/api/show?locale=' + locale)
       .then(response => response.json<News[]>())
       .then(newsList => {
         setNewsList(newsList);

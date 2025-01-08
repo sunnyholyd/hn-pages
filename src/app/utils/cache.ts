@@ -1,17 +1,21 @@
-import { MONTH_SET } from "../common/constants";
-import { News } from "../common/types";
+import { MONTH_SET } from "../commons/constants";
+import { News } from "../commons/types";
 import dbManager from "./dbManager";
 import { fetchNewsList } from "./newsUtils";
 
-export async function updateNewsCache(cachedNewsList: News[] | null, db: D1Database): Promise<News[]> {
+export const CACHE_KEY_NEWS_LIST_PREFIX = "news_list_";
+
+export async function updateNewsCache(env: CloudflareEnv, locale: string): Promise<News[]> {
+  const db = env.DB;
   const itemList = await dbManager.selectShowList(db);
-  const newsList = await fetchNewsList(db, itemList);
-  
-  cachedNewsList = newsList;
+  const newsList = await fetchNewsList(db, itemList, locale);
+
+  await env.HN_CACHE.put(CACHE_KEY_NEWS_LIST_PREFIX + locale, JSON.stringify(newsList));
+
   return newsList;
 }
 
-export async function updateMonthlyTopCache(month: string, env: CloudflareEnv) {
+export async function updateMonthlyTopCache(month: string, env: CloudflareEnv, locale: string) {
   const sql = `WITH monthly_stories AS (
     SELECT 
       id,
@@ -42,7 +46,7 @@ export async function updateMonthlyTopCache(month: string, env: CloudflareEnv) {
   ORDER BY descendants DESC;`
 
   const monthlyTopNews = await dbManager.query(env.DB, sql, [month]);
-  const newsList = await fetchNewsList(env.DB, monthlyTopNews.map((item: any) => ({ item_id: item.id })));
+  const newsList = await fetchNewsList(env.DB, monthlyTopNews.map((item: any) => ({ item_id: item.id })), locale);
 
   // 如果是当前月份，缓存6小时，数据需要重新刷新
   if (month === MONTH_SET[0]) {

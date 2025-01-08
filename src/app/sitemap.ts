@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { MONTH_SET } from './common/constants'
+import { MONTH_SET } from './commons/constants'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://news.sunnyd.top'

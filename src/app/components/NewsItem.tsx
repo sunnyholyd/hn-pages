@@ -1,6 +1,6 @@
 import React from 'react';
-import { News } from '../common/types';
-import { USER_URL_PREFIX, ITEM_URL_PREFIX } from '../common/constants';
+import { News } from '../commons/types';
+import { USER_URL_PREFIX, ITEM_URL_PREFIX } from '../commons/constants';
 
 interface NewsItemProps {
   news: News;
@@ -33,12 +33,24 @@ export default function NewsItem({ news, defaultExpanded }: NewsItemProps) {
         </div>
       )}
 
-      {isExpanded && news.cmt_summary.length > 0 && (
+      {isExpanded && news.positive_summary && (
+        <div className="mt-2 p-2 bg-gray-100 rounded">
+          <p className='text-sm text-gray-800'>{news.positive_summary}</p>
+        </div>
+      )}
+
+      {isExpanded && news.negative_summary && (
+        <div className="mt-2 p-2 bg-gray-100 rounded">
+          <p className='text-sm text-gray-800'>{news.negative_summary}</p>
+        </div>
+      )}
+
+      {isExpanded && news.valuable_information.length > 0 && (
         <div className="mt-2 p-2 bg-gray-100 rounded">
           <h4 className="text-sm font-semibold mb-2">评论摘要：</h4>
           <ul className="list-disc list-inside">
-            {news.cmt_summary.map((summary, index) => (
-              <li key={index} className="text-sm text-gray-800 mb-1">{summary}</li>
+            {news.valuable_information.map((info, index) => (
+              <li key={index} className="text-sm text-gray-800 mb-1">{info}</li>
             ))}
           </ul>
         </div>

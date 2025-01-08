@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { MONTH_SET } from "../common/constants";
+import { MONTH_SET } from "../commons/constants";
 
 export default function MonthlyTopLayout({
   children,

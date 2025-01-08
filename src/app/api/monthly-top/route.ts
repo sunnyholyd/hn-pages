@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   const env = getRequestContext().env;
   const { searchParams } = new URL(request.url);
   const month = searchParams.get('month'); 
-
+  const locale = searchParams.get('locale') || 'en';
   if (!month) {
     return Response.json([]);
   }
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     return Response.json(JSON.parse(monthlyTopNews));
   } else {
     console.log("monthlyTopNews is null, start query db");
-    const newsList = await updateMonthlyTopCache(month, getRequestContext().env);
+    const newsList = await updateMonthlyTopCache(month, getRequestContext().env, locale);
     return Response.json(newsList);
   }
 }
