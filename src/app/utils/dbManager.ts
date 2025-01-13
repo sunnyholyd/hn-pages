@@ -3,6 +3,8 @@ import * as Constants from '../commons/constants';
 import { ShowListItem, ShepherdItem } from '../commons/types';
 import { ShepherdItemImpl } from "../commons/SheperdItemImpl";
 import { fromWritableAiSummaryItem } from "../utils/typeUtils";
+import { AI_CN_TABLE } from "../commons/constants";
+import { AI_SUMMARY_TABLE } from "../commons/constants";
 
 async function query(db: D1Database, sql: string, params?: any[]) {
   const stmt = params ? db.prepare(sql).bind(...params) : db.prepare(sql);
@@ -30,6 +32,10 @@ async function selectShepherdItem(db: D1Database, id: number) {
   const stmt = selectSingleStmt(db, Constants.ITEMS_SHEPHERD_TABLE, id);
   const result = await (await stmt).first<ShepherdItem>();
   return result ? new ShepherdItemImpl(result) : null;
+}
+async function selectLocaleAiSummaryItem(db: D1Database, id: number, locale: string) {
+  const tableName = locale === 'en' ? AI_SUMMARY_TABLE: AI_CN_TABLE;
+  return selectAiSummaryItem(db, id, tableName);
 }
 
 async function selectAiSummaryItem(db: D1Database, id: number, tableName: string) {
@@ -70,5 +76,6 @@ export default {
   selectAllComments,
   selectShowList,
   selectShepherdItem,
-  selectAiSummaryItem
+  selectAiSummaryItem,
+  selectLocaleAiSummaryItem
 }

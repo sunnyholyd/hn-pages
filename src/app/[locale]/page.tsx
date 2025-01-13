@@ -7,7 +7,6 @@ import { useLocale, useTranslations } from 'next-intl';
 
 export default function Home() {
   const locale = useLocale();
-  const t = useTranslations('HomePage');
   const [newsList, setNewsList] = useState<News[]>([]);
 
   useEffect(() => {

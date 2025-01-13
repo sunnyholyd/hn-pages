@@ -3,5 +3,16 @@
     "title": "Hacker News",
     "news": "News",
     "monthlyTop": "Monthly Top"
+  },
+  "NewsDetails": {
+    "introduction": "Introduction",
+    "tags": "Tags",
+    "positiveComments": "Positive Comments",
+    "negativeComments": "Negative Comments",
+    "valuableInformation": "Valuable Information",
+    "extraInfo": "Extra Information"
+  },
+  "NewsItem": {
+    "commentsSummary": "Comments Summary"
   }
 }

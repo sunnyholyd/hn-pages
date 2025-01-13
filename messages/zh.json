@@ -3,5 +3,16 @@
     "title": "Hacker News",
     "news": "新闻",
     "monthlyTop": "月度热门"
+  },
+  "NewsDetails": {
+    "introduction": "简介",
+    "tags": "标签",
+    "positiveComments": "正面评价",
+    "negativeComments": "负面评价",
+    "valuableInformation": "有价值的信息",
+    "extraInfo": "附加信息"
+  },
+  "NewsItem": {
+    "commentsSummary": "评论摘要"
   }
 }

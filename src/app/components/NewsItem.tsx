@@ -1,7 +1,7 @@
 import React from 'react';
 import { News } from '../commons/types';
 import { USER_URL_PREFIX, ITEM_URL_PREFIX } from '../commons/constants';
-
+import { useTranslations } from 'next-intl';
 interface NewsItemProps {
   news: News;
   defaultExpanded: boolean;
@@ -10,13 +10,14 @@ interface NewsItemProps {
 
 export default function NewsItem({ news, defaultExpanded }: NewsItemProps) {
   const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+  const t = useTranslations('NewsItem');
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   }
 
   return (
-    <div className="border-b border-gray-300 py-4">
+    <div className="py-4">
       <div className=" hover:bg-gray-100 hover:cursor-pointer" onClick={toggleExpanded}>
         <div className="flex items-center">
           <span className='mr-2'> {isExpanded ? ' ▲ ' : ' ▼ '} </span>
@@ -33,21 +34,9 @@ export default function NewsItem({ news, defaultExpanded }: NewsItemProps) {
         </div>
       )}
 
-      {isExpanded && news.positive_summary && (
-        <div className="mt-2 p-2 bg-gray-100 rounded">
-          <p className='text-sm text-gray-800'>{news.positive_summary}</p>
-        </div>
-      )}
-
-      {isExpanded && news.negative_summary && (
-        <div className="mt-2 p-2 bg-gray-100 rounded">
-          <p className='text-sm text-gray-800'>{news.negative_summary}</p>
-        </div>
-      )}
-
       {isExpanded && news.valuable_information.length > 0 && (
         <div className="mt-2 p-2 bg-gray-100 rounded">
-          <h4 className="text-sm font-semibold mb-2">评论摘要：</h4>
+          <h4 className="text-sm font-semibold mb-2">{t('commentsSummary')}</h4>
           <ul className="list-disc list-inside">
             {news.valuable_information.map((info, index) => (
               <li key={index} className="text-sm text-gray-800 mb-1">{info}</li>
