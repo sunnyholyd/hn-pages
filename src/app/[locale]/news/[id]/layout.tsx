@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import dbManager from "@/app/utils/dbManager";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { notFound } from "next/navigation";
+import cache from "@/app/utils/cache";
 
 export const runtime = 'edge';
 
 export async function generateMetadata({ params }: { params: { id: string, locale: string } }): Promise<Metadata> {
-  const summary = await dbManager.selectLocaleAiSummaryItem(getRequestContext().env.DB, parseInt(params.id), params.locale);
-
+  const summary = await cache.getAiSummary(getRequestContext().env, parseInt(params.id), params.locale);
   if (!summary) {
     notFound();
   }

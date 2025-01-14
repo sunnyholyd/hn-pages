@@ -1,11 +1,25 @@
 import { MONTH_SET } from "../commons/constants";
-import { News } from "../commons/types";
+import { AiSummaryOutput, Details, HnItem, News } from "../commons/types";
 import dbManager from "./dbManager";
 import { fetchNewsList } from "./newsUtils";
 
 export const CACHE_KEY_NEWS_LIST_PREFIX = "news_list_";
+export const CACHE_KEY_HN_ITEM_PREFIX = "hn_item_";
+export const CACHE_KEY_AI_SUMMARY_PREFIX = "ai_summary_";
 
-export async function updateNewsCache(env: CloudflareEnv, locale: string): Promise<News[]> {
+// newsList
+async function getNewsList(env: CloudflareEnv, locale: string): Promise<News[]> {
+  const cachedNewsList = await env.HN_CACHE.get(CACHE_KEY_NEWS_LIST_PREFIX + locale);
+  // 如果缓存不存在，等待首次更新
+  if (!cachedNewsList) {
+    console.log('cachedNewsList is null, start first updateCache.');
+    const newsList = await updateNewsList(env, locale);
+    return newsList;
+  }
+  return JSON.parse(cachedNewsList);
+}
+
+async function updateNewsList(env: CloudflareEnv, locale: string): Promise<News[]> {
   const db = env.DB;
   const itemList = await dbManager.selectShowList(db);
   const newsList = await fetchNewsList(db, itemList, locale);
@@ -15,7 +29,56 @@ export async function updateNewsCache(env: CloudflareEnv, locale: string): Promi
   return newsList;
 }
 
-export async function updateMonthlyTopCache(month: string, env: CloudflareEnv, locale: string) {
+// hnItem
+async function getHnItem(env: CloudflareEnv, id: number): Promise<HnItem | null> {
+  const cachedNewsItem = await env.HN_CACHE.get(CACHE_KEY_HN_ITEM_PREFIX + id);
+  if (!cachedNewsItem) {
+    const newsItem = await dbManager.selectHnItem(env.DB, id);
+    await env.HN_CACHE.put(CACHE_KEY_HN_ITEM_PREFIX + id, JSON.stringify(newsItem));
+    return newsItem;
+  }
+  return JSON.parse(cachedNewsItem);
+}
+
+// aiSummary
+async function getAiSummary(env: CloudflareEnv, id: number, locale: string): Promise<AiSummaryOutput | null> {
+  const cachedAiSummary = await env.HN_CACHE.get(CACHE_KEY_AI_SUMMARY_PREFIX + id + locale);
+  if (!cachedAiSummary) {
+    const aiSummary = await dbManager.selectLocaleAiSummaryItem(env.DB, id, locale);
+    await env.HN_CACHE.put(CACHE_KEY_AI_SUMMARY_PREFIX + id + locale, JSON.stringify(aiSummary));
+    return aiSummary;
+  }
+  return JSON.parse(cachedAiSummary);
+}
+
+// details
+async function getDetails(env: CloudflareEnv, id: number, locale: string = 'en'): Promise<Details | null> {
+  const hnItem = await getHnItem(env, id);
+  const summary = await getAiSummary(env, id, locale);
+  if (!hnItem || !summary) {
+    return null;
+  }
+  return {
+    hnItem,
+    summary
+  }
+}
+
+// monthlyTop
+async function getMonthlyTop(env: CloudflareEnv, month: string, locale: string): Promise<News[]> {
+  const monthlyTopNews = await env.HN_CACHE.get(month, {cacheTtl: 21600});
+  console.log("monthlyTopNews" + monthlyTopNews);
+  if (monthlyTopNews) {
+    console.log("monthlyTopNews hit cache, return from cache");
+    return JSON.parse(monthlyTopNews);
+  } else {
+    console.log("monthlyTopNews is null, start query db");
+    const newsList = await updateMonthlyTopCache(month, env, locale);
+    return newsList;
+  }
+}
+
+async function updateMonthlyTopCache(month: string, env: CloudflareEnv, locale: string) {
   const sql = `WITH monthly_stories AS (
     SELECT 
       id,
@@ -55,4 +118,14 @@ export async function updateMonthlyTopCache(month: string, env: CloudflareEnv, l
     await env.HN_CACHE.put(month, JSON.stringify(newsList));
   }
   return newsList;
+}
+
+export default {
+  getNewsList,
+  updateNewsList,
+  getHnItem,
+  getAiSummary,
+  getDetails,
+  getMonthlyTop,
+  updateMonthlyTopCache,
 }

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { updateNewsCache } from '@/app/utils/cache';
+import cache from '@/app/utils/cache';
 import { getRequestContext } from '@cloudflare/next-on-pages'
 
 export const runtime = 'edge';
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     // }
 
     console.log('try to update newslist cache.');
-    await updateNewsCache(getRequestContext().env, 'en');
+    await cache.updateNewsList(getRequestContext().env, 'en');
     return new Response('Cache updated successfully', { status: 200 });
   } catch (error) {
     console.error('Cache update failed:', error);

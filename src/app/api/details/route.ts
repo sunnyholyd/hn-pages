@@ -1,11 +1,19 @@
 import { NextResponse } from "next/server";
-import dbManager from "@/app/utils/dbManager";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import cache from "@/app/utils/cache";
+import { NextRequest } from 'next/server'
 
 export const runtime = 'edge';
 
-export async function GET(request: Request, { params }: { params: { id: number, locale: string } }) {
-  const summary = await dbManager.selectLocaleAiSummaryItem(getRequestContext().env.DB, params.id, params.locale);
-  const hnItem = await dbManager.selectHnItem(getRequestContext().env.DB, params.id);
-  return NextResponse.json({summary, hnItem});
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams
+  const id = searchParams.get('id');
+  const locale = searchParams.get('locale');
+
+  if (!id || !locale) {
+    return NextResponse.json({ error: 'Missing id or locale' }, { status: 400 });
+  }
+  
+  const details = await cache.getDetails(getRequestContext().env, Number(id), locale);
+  return NextResponse.json(details);
 }

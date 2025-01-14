@@ -1,6 +1,4 @@
-import { updateMonthlyTopCache } from '@/app/utils/cache';
-import dbManager from '@/app/utils/dbManager';
-import { fetchNewsList } from '@/app/utils/newsUtils';
+import cache from '@/app/utils/cache';
 import { getRequestContext } from '@cloudflare/next-on-pages';
 import type { NextRequest } from 'next/server'
 
@@ -16,15 +14,7 @@ export async function GET(request: NextRequest) {
     return Response.json([]);
   }
 
-  // get from kv cache
-  const monthlyTopNews = await env.HN_CACHE.get(month, {cacheTtl: 21600});
-  console.log("monthlyTopNews" + monthlyTopNews);
-  if (monthlyTopNews) {
-    console.log("monthlyTopNews hit cache, return from cache");
-    return Response.json(JSON.parse(monthlyTopNews));
-  } else {
-    console.log("monthlyTopNews is null, start query db");
-    const newsList = await updateMonthlyTopCache(month, getRequestContext().env, locale);
-    return Response.json(newsList);
-  }
+  const newsList = await cache.getMonthlyTop(env, month, locale);
+  return Response.json(newsList);
+
 }

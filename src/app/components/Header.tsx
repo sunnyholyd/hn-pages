@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 
@@ -16,6 +16,8 @@ export default function Header() {
   const switchLocale = locale === 'en' ? 'zh' : 'en';
   // 移除当前路径中的语言前缀以获取基本路径
   const basePath = pathname.replace(/^\/[^\/]+/, '');
+
+  console.log("basePath", basePath);
 
   return (
     <header className="bg-orange-500">
@@ -32,7 +34,7 @@ export default function Header() {
               <Link href="/" className="text-white/90 hover:text-white text-sm">
                 {t('news')}
               </Link>
-              <span className="text-white/90 text-sm mx-2">·</span>
+              {/* <span className="text-white/90 text-sm mx-2">·</span> */}
               {/* {navs.map((nav) => (
                 <React.Fragment key={nav.path}>
                   <Link
@@ -49,8 +51,9 @@ export default function Header() {
           {/* 右侧语言切换按钮 */}
           <div className="flex items-center">
             <Link
-              href={`/${switchLocale}${basePath}`}
+              href={`${basePath ? basePath : '/'}`}
               className="text-white/90 hover:text-white text-sm border border-white/30 rounded px-3 py-1"
+              locale={switchLocale}
             >
               {switchLocale.toUpperCase()}
             </Link>
