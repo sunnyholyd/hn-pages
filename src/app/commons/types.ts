@@ -72,3 +72,8 @@ export interface News {
   valuable_information: string[];
   extra?: string;
 }
+
+export type Details = {
+  summary: AiSummaryOutput;
+  hnItem: HnItem;
+}

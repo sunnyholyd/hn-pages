@@ -1,23 +1,31 @@
 import React from 'react';
-import { AiSummaryOutput } from '../commons/types';
+import { Details } from '../commons/types';
 import { useTranslations } from 'next-intl';
-
-interface NewsDetailsProps {
-  summary: AiSummaryOutput;
-}
-
-export default function NewsDetails({ summary }: NewsDetailsProps) {
+import { ITEM_URL_PREFIX } from '../commons/constants';
+export default function NewsDetails({ summary, hnItem }: Details) {
   const t = useTranslations('NewsDetails');
 
   return (
     <div className="py-4">
       <h2 className="text-lg font-semibold text-blue-600">{summary.title}</h2>
       <div className="space-y-4 mt-2">
+
+        {/* 原始的文章链接 */}
+        <div className="p-2 bg-gray-100 rounded">
+          <h3 className="text-sm font-semibold mb-2">{t('originalStory')}</h3>
+          <p className="text-sm text-blue-600">
+            <a href={hnItem.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              {hnItem.title}
+            </a>
+          </p>
+        </div>
+
         {/* Introduction */}
         <div className="p-2 bg-gray-100 rounded">
           <h3 className="text-sm font-semibold mb-2">{t('introduction')}</h3>
           <p className="text-sm text-gray-800">{summary.introduction}</p>
         </div>
+
 
         {/* Tags */}
         {summary.tags.length > 0 && (
@@ -34,6 +42,18 @@ export default function NewsDetails({ summary }: NewsDetailsProps) {
             </div>
           </div>
         )}
+
+        {/* Original Comments */}
+        <div className="p-2 bg-gray-100 rounded">
+          <h3 className="text-sm font-semibold mb-2">{t('userComments')}</h3>
+          <p className="text-sm text-blue-600">
+            <a href={ITEM_URL_PREFIX + hnItem.id} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              {t('totalComments')}: {hnItem.descendants}
+            </a>
+          </p>
+
+        </div>
+
         <div className="flex gap-2 justify-center">
           {/* Positive Comments Summary */}
           {summary.positiveCommentsSummary && (
@@ -42,6 +62,10 @@ export default function NewsDetails({ summary }: NewsDetailsProps) {
               <p className="text-sm text-gray-800">{summary.positiveCommentsSummary}</p>
             </div>
           )}
+
+          <div className="flex items-center">
+            <span> VS </span>
+          </div>
 
           {/* Negative Comments Summary */}
           {summary.negativeCommentsSummary && (

@@ -10,9 +10,18 @@
     "positiveComments": "正面评价",
     "negativeComments": "负面评价",
     "valuableInformation": "有价值的信息",
-    "extraInfo": "附加信息"
+    "extraInfo": "附加信息",
+    "originalStory": "原始文章",
+    "userComments": "用户评论",
+    "totalComments": "评论总数"
   },
   "NewsItem": {
     "commentsSummary": "评论摘要"
+  },
+  "Metadata": {
+    "title": "今日科技头条 - Hacker News 中文",
+    "description": "Hacker News中文站，让你快速了解全球顶尖黑客都在关注什么。实时更新最新的科技新闻、创业资讯和技术讨论。每日精选 Hacker News 热门内容，提供中文摘要和评论总结。",
+    "keywords": "Hacker News, AI技术, 黑客新闻, 科技新闻, 创业资讯, 技术讨论, 中文摘要, 评论总结",
+    "ogDescription": "最新科技新闻和评论的中文聚合平台，让你快速了解全球顶尖黑客都在关注什么。"
   }
 }

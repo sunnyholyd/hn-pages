@@ -10,20 +10,35 @@ import { routing } from "@/i18n/routing";
 import "@/app/globals.css";
 import { NextIntlClientProvider } from "next-intl";
 
+type Messages = {
+  Metadata: {
+    title: string;
+    description: string;
+    keywords: string;
+    ogDescription: string;
+  };
+  [key: string]: any;
+};
+
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Hacker News中文",
-  description: "Hacker News中文站，让你快速了解全球顶尖黑客都在关注什么。实时更新最新的科技新闻、创业资讯和技术讨论。每日精选 Hacker News 热门内容，提供中文摘要和评论总结。",
-  keywords: "Hacker News, AI技术, 黑客新闻, 科技新闻, 创业资讯, 技术讨论, 中文摘要, 评论总结",
-  openGraph: {
-    title: "Hacker News中文",
-    description: "最新科技新闻和评论的中文聚合平台，让你快速了解全球顶尖黑客都在关注什么。",
-    type: "website",
-    locale: "zh_CN",
-    url: "https://news.sunnyd.top",
-  },
-};
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
+  const messages = (await getMessages()) as Messages;
+  const localeForOG = locale === 'zh' ? 'zh_CN' : 'en_US';
+
+  return {
+    title: messages.Metadata.title,
+    description: messages.Metadata.description,
+    keywords: messages.Metadata.keywords,
+    openGraph: {
+      title: messages.Metadata.title,
+      description: messages.Metadata.ogDescription,
+      type: "website",
+      locale: localeForOG,
+      url: "https://news.sunnyd.top",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -48,7 +63,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Scripts />
         <NextIntlClientProvider locale={locale} messages={messages}>
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <Header />
           {children}
           </div>

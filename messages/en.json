@@ -7,12 +7,21 @@
   "NewsDetails": {
     "introduction": "Introduction",
     "tags": "Tags",
-    "positiveComments": "Positive Comments",
-    "negativeComments": "Negative Comments",
+    "positiveComments": "Positive Comments Summary",
+    "negativeComments": "Negative Comments Summary",
     "valuableInformation": "Valuable Information",
-    "extraInfo": "Extra Information"
+    "extraInfo": "Extra Information",
+    "originalStory": "Original Story",
+    "userComments": "User Comments",
+    "totalComments": "Total Comments"
   },
   "NewsItem": {
     "commentsSummary": "Comments Summary"
+  },
+  "Metadata": {
+    "title": "Top Tech Stories Today - Hacker News",
+    "description": "Stay updated with the latest tech news, startup information, and technical discussions from Hacker News. Get real-time updates with English summaries and comment highlights.",
+    "keywords": "Hacker News, Tech News, Startup News, Technology Discussions, AI Technology, English Summaries",
+    "ogDescription": "Your daily source for the latest tech news and discussions from the global hacker community."
   }
 }
