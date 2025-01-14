@@ -1,9 +1,10 @@
 import {defineRouting} from 'next-intl/routing';
 import {createNavigation} from 'next-intl/navigation';
+import { LOCALES } from '@/app/commons/constants';
  
 export const routing = defineRouting({
   // A list of all locales that are supported
-  locales: ['en', 'zh'],
+  locales: LOCALES,
  
   // Used when no locale matches
   defaultLocale: 'en'

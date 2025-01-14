@@ -1,4 +1,4 @@
-import { News } from "../commons/types";
+import { Details, News } from "../commons/types";
 import dbManager from "./dbManager";
 import { AI_SUMMARY_TABLE, AI_CN_TABLE } from "../commons/constants";
 
@@ -33,3 +33,16 @@ export async function fetchNewsList(db: D1Database, itemList: { item_id: number 
 
   return newsList;
 } 
+
+export async function getNewsDetails(db: D1Database, id: string, locale: string): Promise<Details | null> {
+  const summary = await dbManager.selectLocaleAiSummaryItem(db, parseInt(id), locale);
+  const hnItem = await dbManager.selectHnItem(db, parseInt(id));
+  if (!summary || !hnItem) {
+    return null;
+  }
+
+  return {
+    summary,
+    hnItem
+  };
+}

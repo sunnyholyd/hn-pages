@@ -9,3 +9,5 @@ export const ITEM_URL_PREFIX = 'https://news.ycombinator.com/item?id=';
 export const USER_URL_PREFIX = 'https://news.ycombinator.com/user?id=';
 
 export const MONTH_SET = ['2025-01', '2024-12', '2024-11', '2024-10', '2024-09', '2024-08'];
+
+export const LOCALES = ['en', 'zh'];

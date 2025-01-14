@@ -1,4 +1,4 @@
-import { AiSummaryOutput, HnItem, SimpleComment, WritableAiSummaryItem } from "../commons/types";
+import { HnItem, SimpleComment, WritableAiSummaryItem } from "../commons/types";
 import * as Constants from '../commons/constants';
 import { ShowListItem, ShepherdItem } from '../commons/types';
 import { ShepherdItemImpl } from "../commons/SheperdItemImpl";
@@ -44,6 +44,11 @@ async function selectAiSummaryItem(db: D1Database, id: number, tableName: string
   return result ? fromWritableAiSummaryItem(result) : null;
 }
 
+async function selectAllAiSummary(db: D1Database): Promise<WritableAiSummaryItem[]> {
+  const {results} = await db.prepare(`SELECT * FROM ${AI_SUMMARY_TABLE}`).all<WritableAiSummaryItem>();
+  return results;
+}
+
 async function selectHnItem(db: D1Database, id: number) {
   const stmt = selectSingleStmt(db, Constants.HN_ITEMS_TABLE, id);
   return (await stmt).first<HnItem>();
@@ -69,6 +74,7 @@ async function selectAllComments(db: D1Database, parent_id: number): Promise<Sim
 }
 
 
+
 export default {
   query,
   limitSelect,
@@ -77,5 +83,6 @@ export default {
   selectShowList,
   selectShepherdItem,
   selectAiSummaryItem,
-  selectLocaleAiSummaryItem
+  selectLocaleAiSummaryItem,
+  selectAllAiSummary
 }
