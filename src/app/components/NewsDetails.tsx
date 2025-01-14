@@ -2,6 +2,8 @@ import React from 'react';
 import { Details } from '../commons/types';
 import { useTranslations } from 'next-intl';
 import { ITEM_URL_PREFIX } from '../commons/constants';
+import InfoSection from './InfoSection';
+
 export default function NewsDetails({ summary, hnItem }: Details) {
   const t = useTranslations('NewsDetails');
 
@@ -9,25 +11,19 @@ export default function NewsDetails({ summary, hnItem }: Details) {
     <div className="py-4">
       <h2 className="text-lg font-semibold text-blue-600">{summary.title}</h2>
       <div className="space-y-4 mt-2">
-
-        {/* 原始的文章链接 */}
-        <div className="p-2 bg-gray-100 rounded">
-          <h3 className="text-sm font-semibold mb-2">{t('originalStory')}</h3>
+        
+        <InfoSection title={t('originalStory')}>
           <p className="text-sm text-blue-600">
             <a href={hnItem.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
               {hnItem.title}
             </a>
           </p>
-        </div>
+        </InfoSection>
 
-        {/* Introduction */}
-        <div className="p-2 bg-gray-100 rounded">
-          <h3 className="text-sm font-semibold mb-2">{t('introduction')}</h3>
+        <InfoSection title={t('introduction')}>
           <p className="text-sm text-gray-800">{summary.introduction}</p>
-        </div>
+        </InfoSection>
 
-
-        {/* Tags */}
         {summary.tags.length > 0 && (
           <div className="p-2">
             <div className="flex flex-wrap gap-2">
@@ -43,43 +39,34 @@ export default function NewsDetails({ summary, hnItem }: Details) {
           </div>
         )}
 
-        {/* Original Comments */}
-        <div className="p-2 bg-gray-100 rounded">
-          <h3 className="text-sm font-semibold mb-2">{t('userComments')}</h3>
+        <InfoSection title={t('userComments')}>
           <p className="text-sm text-blue-600">
             <a href={ITEM_URL_PREFIX + hnItem.id} target="_blank" rel="noopener noreferrer" className="hover:underline">
               {t('totalComments')}: {hnItem.descendants}
             </a>
           </p>
-
-        </div>
+        </InfoSection>
 
         <div className="flex gap-2 justify-center">
-          {/* Positive Comments Summary */}
           {summary.positiveCommentsSummary && (
-            <div className="p-2 bg-gray-100 rounded">
-              <h3 className="text-sm font-semibold mb-2">{t('positiveComments')}</h3>
+            <InfoSection title={t('positiveComments')}>
               <p className="text-sm text-gray-800">{summary.positiveCommentsSummary}</p>
-            </div>
+            </InfoSection>
           )}
 
           <div className="flex items-center">
             <span> VS </span>
           </div>
 
-          {/* Negative Comments Summary */}
           {summary.negativeCommentsSummary && (
-            <div className="p-2 bg-gray-100 rounded">
-              <h3 className="text-sm font-semibold mb-2">{t('negativeComments')}</h3>
+            <InfoSection title={t('negativeComments')}>
               <p className="text-sm text-gray-800">{summary.negativeCommentsSummary}</p>
-            </div>
+            </InfoSection>
           )}
         </div>
 
-        {/* Valuable Information */}
         {summary.valuableInformation.length > 0 && (
-          <div className="p-2 bg-gray-100 rounded">
-            <h3 className="text-sm font-semibold mb-2">{t('valuableInformation')}</h3>
+          <InfoSection title={t('valuableInformation')}>
             <ul className="list-disc list-inside">
               {summary.valuableInformation.map((info, index) => (
                 <li key={index} className="text-sm text-gray-800 mb-1">
@@ -87,15 +74,13 @@ export default function NewsDetails({ summary, hnItem }: Details) {
                 </li>
               ))}
             </ul>
-          </div>
+          </InfoSection>
         )}
 
-        {/* Extra Information */}
         {summary.extra && (
-          <div className="p-2 bg-gray-100 rounded">
-            <h3 className="text-sm font-semibold mb-2">{t('extraInfo')}</h3>
+          <InfoSection title={t('extraInfo')}>
             <p className="text-sm text-gray-800">{summary.extra}</p>
-          </div>
+          </InfoSection>
         )}
       </div>
     </div>
