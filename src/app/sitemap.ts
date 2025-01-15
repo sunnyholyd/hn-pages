@@ -15,23 +15,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily' as const,
       priority: 0.8,
   },
-  {
-    url: `${baseUrl}/${locale}/monthly-top`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
-  }
+  // {
+  //   url: `${baseUrl}/${locale}/monthly-top`,
+  //   lastModified: new Date(),
+  //   changeFrequency: 'monthly' as const,
+  //   priority: 0.8,
+  // }
 ]);
 
   // 为每个月份生成对应的URL
-  const monthlyRoutes = LOCALES.flatMap(
-    locale => MONTH_SET.map(month => ({
-    url: `${baseUrl}/${locale}/monthly-top?month=${month}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 1,
-  }))
-  );
+  // const monthlyRoutes = LOCALES.flatMap(
+  //   locale => MONTH_SET.map(month => ({
+  //   url: `${baseUrl}/${locale}/monthly-top?month=${month}`,
+  //   lastModified: new Date(),
+  //   changeFrequency: 'monthly' as const,
+  //   priority: 1,
+  // }))
+  // );
 
   // 获取所有新闻摘要ID
   const aiSummary = await dbManager.selectAllAiSummary(getRequestContext().env.DB)
@@ -44,5 +44,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     })));
 
-  return [...routes, ...monthlyRoutes, ...newsRoutes]
+  return [...routes, ...newsRoutes]
 } 

@@ -24,7 +24,7 @@ async function updateNewsList(env: CloudflareEnv, locale: string): Promise<News[
   const itemList = await dbManager.selectShowList(db);
   const newsList = await fetchNewsList(db, itemList, locale);
 
-  await env.HN_CACHE.put(CACHE_KEY_NEWS_LIST_PREFIX + locale, JSON.stringify(newsList));
+  await env.HN_CACHE.put(CACHE_KEY_NEWS_LIST_PREFIX + locale, JSON.stringify(newsList), {expirationTtl: 600});
 
   return newsList;
 }
@@ -34,7 +34,9 @@ async function getHnItem(env: CloudflareEnv, id: number): Promise<HnItem | null>
   const cachedNewsItem = await env.HN_CACHE.get(CACHE_KEY_HN_ITEM_PREFIX + id);
   if (!cachedNewsItem) {
     const newsItem = await dbManager.selectHnItem(env.DB, id);
-    await env.HN_CACHE.put(CACHE_KEY_HN_ITEM_PREFIX + id, JSON.stringify(newsItem));
+    if (newsItem) {
+      await env.HN_CACHE.put(CACHE_KEY_HN_ITEM_PREFIX + id, JSON.stringify(newsItem), {expirationTtl: 600});
+    }
     return newsItem;
   }
   return JSON.parse(cachedNewsItem);
@@ -45,7 +47,9 @@ async function getAiSummary(env: CloudflareEnv, id: number, locale: string): Pro
   const cachedAiSummary = await env.HN_CACHE.get(CACHE_KEY_AI_SUMMARY_PREFIX + id + locale);
   if (!cachedAiSummary) {
     const aiSummary = await dbManager.selectLocaleAiSummaryItem(env.DB, id, locale);
-    await env.HN_CACHE.put(CACHE_KEY_AI_SUMMARY_PREFIX + id + locale, JSON.stringify(aiSummary));
+    if (aiSummary) {
+      await env.HN_CACHE.put(CACHE_KEY_AI_SUMMARY_PREFIX + id + locale, JSON.stringify(aiSummary), {expirationTtl: 600});
+    }
     return aiSummary;
   }
   return JSON.parse(cachedAiSummary);

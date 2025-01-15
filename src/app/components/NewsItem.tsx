@@ -19,7 +19,7 @@ export default function NewsItem({ news, defaultExpanded }: NewsItemProps) {
   }
 
   return (
-    <div className="py-4">
+    <div className="py-1">
       <Link 
         href={`/news/${news.id}`}
         className="block hover:bg-gray-100 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"

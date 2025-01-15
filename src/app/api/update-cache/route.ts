@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
 
     console.log('try to update newslist cache.');
     await cache.updateNewsList(getRequestContext().env, 'en');
+    await cache.updateNewsList(getRequestContext().env, 'zh');
     return new Response('Cache updated successfully', { status: 200 });
   } catch (error) {
     console.error('Cache update failed:', error);
