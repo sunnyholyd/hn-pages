@@ -63,11 +63,19 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Scripts />
         <NextIntlClientProvider locale={locale} messages={messages}>
-        <div className="max-w-4xl mx-auto">
-          <Header />
-          {children}
+          <div className="max-w-4xl mx-auto">
+            <Header />
+            {children}
           </div>
         </NextIntlClientProvider>
+
+        <hr className="max-w-4xl mx-auto my-4 border-gray-200" />
+
+        <footer>
+          <div className="max-w-4xl mx-auto my-2 flex justify-between items-center">
+            <p>© 2025 SunnyD. All rights reserved.</p>
+          </div>
+        </footer>
       </body>
     </html>
   );

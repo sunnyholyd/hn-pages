@@ -3,21 +3,29 @@
 import React from 'react';
 import { Link } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function Header() {
   const locale = useLocale();
   const t = useTranslations('Header');
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const navs = [
-    { label: t('monthlyTop'), path: `/${locale}/monthly-top` },
+    { label: 'Top', path: `/top` },
   ];
 
   const switchLocale = locale === 'en' ? 'zh' : 'en';
+
   // 移除当前路径中的语言前缀以获取基本路径
   const basePath = pathname.replace(/^\/[^\/]+/, '');
+  
+  // 获取当前URL的查询参数
+  const queryString = searchParams.toString();
+  const fullPath = queryString ? `${basePath ? basePath : '/'}?${queryString}` : (basePath ? basePath : '/');
 
   console.log("basePath", basePath);
+  console.log("queryString", queryString);
+  console.log("fullPath", fullPath);
 
   return (
     <header className="bg-orange-500">
@@ -34,8 +42,8 @@ export default function Header() {
               <Link href="/" className="text-white/90 hover:text-white text-sm">
                 {t('news')}
               </Link>
-              {/* <span className="text-white/90 text-sm mx-2">·</span> */}
-              {/* {navs.map((nav) => (
+              <span className="text-white/90 text-sm mx-2">·</span>
+              {navs.map((nav) => (
                 <React.Fragment key={nav.path}>
                   <Link
                     href={nav.path}
@@ -44,14 +52,14 @@ export default function Header() {
                     {nav.label}
                   </Link>
                 </React.Fragment>
-              ))} */}
+              ))}
             </nav>
           </div>
 
           {/* 右侧语言切换按钮 */}
           <div className="flex items-center">
             <Link
-              href={`${basePath ? basePath : '/'}`}
+              href={fullPath}
               className="text-white/90 hover:text-white text-sm border border-white/30 rounded px-3 py-1"
               locale={switchLocale}
             >

@@ -9,12 +9,13 @@ export async function GET(request: NextRequest) {
   const env = getRequestContext().env;
   const { searchParams } = new URL(request.url);
   const month = searchParams.get('month'); 
+  const tag = searchParams.get('tag') || '';
   const locale = searchParams.get('locale') || 'en';
   if (!month) {
     return Response.json([]);
   }
 
-  const newsList = await cache.getMonthlyTop(env, month, locale);
+  const newsList = await cache.getTopNews(month, tag, locale, env);
   return Response.json(newsList);
 
 }

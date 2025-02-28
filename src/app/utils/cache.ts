@@ -24,7 +24,9 @@ async function updateNewsList(env: CloudflareEnv, locale: string): Promise<News[
   const itemList = await dbManager.selectShowList(db);
   const newsList = await fetchNewsList(db, itemList, locale);
 
-  await env.HN_CACHE.put(CACHE_KEY_NEWS_LIST_PREFIX + locale, JSON.stringify(newsList), {expirationTtl: 600});
+  if (newsList.length > 0) {
+    await env.HN_CACHE.put(CACHE_KEY_NEWS_LIST_PREFIX + locale, JSON.stringify(newsList), { expirationTtl: 600 });
+  }
 
   return newsList;
 }
@@ -35,7 +37,7 @@ async function getHnItem(env: CloudflareEnv, id: number): Promise<HnItem | null>
   if (!cachedNewsItem) {
     const newsItem = await dbManager.selectHnItem(env.DB, id);
     if (newsItem) {
-      await env.HN_CACHE.put(CACHE_KEY_HN_ITEM_PREFIX + id, JSON.stringify(newsItem), {expirationTtl: 600});
+      await env.HN_CACHE.put(CACHE_KEY_HN_ITEM_PREFIX + id, JSON.stringify(newsItem), { expirationTtl: 600 });
     }
     return newsItem;
   }
@@ -48,7 +50,7 @@ async function getAiSummary(env: CloudflareEnv, id: number, locale: string): Pro
   if (!cachedAiSummary) {
     const aiSummary = await dbManager.selectLocaleAiSummaryItem(env.DB, id, locale);
     if (aiSummary) {
-      await env.HN_CACHE.put(CACHE_KEY_AI_SUMMARY_PREFIX + id + locale, JSON.stringify(aiSummary), {expirationTtl: 600});
+      await env.HN_CACHE.put(CACHE_KEY_AI_SUMMARY_PREFIX + id + locale, JSON.stringify(aiSummary), { expirationTtl: 600 });
     }
     return aiSummary;
   }
@@ -68,58 +70,74 @@ async function getDetails(env: CloudflareEnv, id: number, locale: string = 'en')
   }
 }
 
-// monthlyTop
-async function getMonthlyTop(env: CloudflareEnv, month: string, locale: string): Promise<News[]> {
-  const monthlyTopNews = await env.HN_CACHE.get(month, {cacheTtl: 21600});
-  console.log("monthlyTopNews" + monthlyTopNews);
+// topNews
+async function getTopNews(month: string, tag: string, locale: string, env: CloudflareEnv): Promise<News[]> {
+  const monthlyTopNews = await env.HN_CACHE.get(month + "_" + tag + "_" + locale, { cacheTtl: 21600 });
+
   if (monthlyTopNews) {
     console.log("monthlyTopNews hit cache, return from cache");
     return JSON.parse(monthlyTopNews);
   } else {
     console.log("monthlyTopNews is null, start query db");
-    const newsList = await updateMonthlyTopCache(month, env, locale);
+    const newsList = await updateTopNewsCache(month, tag, locale, env);
     return newsList;
   }
 }
 
-async function updateMonthlyTopCache(month: string, env: CloudflareEnv, locale: string) {
-  const sql = `WITH monthly_stories AS (
-    SELECT 
-      id,
-      title,
-      descendants,
-      url,
-      score,
-      strftime('%Y-%m', datetime(CAST(time AS INTEGER), 'unixepoch')) as month,
-      ROW_NUMBER() OVER (
-        PARTITION BY strftime('%Y-%m', datetime(CAST(time AS INTEGER), 'unixepoch'))
-        ORDER BY descendants DESC
-      ) as rank
-    FROM hn_items
-    WHERE type = 'story'
-      AND deleted = 0 
-      AND dead = 0
-      AND strftime('%Y-%m', datetime(CAST(time AS INTEGER), 'unixepoch')) = ?
-  )
+async function updateTopNewsCache(month: string, tag: string, locale: string, env: CloudflareEnv) {
+  const sql = `
+  WITH filtered_stories AS (
   SELECT 
-    month,
-    id,
-    title,
-    descendants,
-    score,
-    url
-  FROM monthly_stories
-  WHERE rank <= 10
-  ORDER BY descendants DESC;`
-
-  const monthlyTopNews = await dbManager.query(env.DB, sql, [month]);
+    h.id,
+    h.title,
+    h.descendants,
+    h.url,
+    h.score,
+    strftime('%Y-%m', datetime(CAST(h.time AS INTEGER), 'unixepoch')) as month
+  FROM hn_items h
+  WHERE h.type = 'story'
+    AND h.deleted = 0 
+    AND h.dead = 0
+    AND strftime('%Y-%m', datetime(CAST(h.time AS INTEGER), 'unixepoch')) = ?
+),
+tagged_stories AS (
+  SELECT 
+    fs.*,
+    a.tags
+  FROM filtered_stories fs
+  LEFT JOIN ai_summary_items a ON fs.id = a.id
+  WHERE ( ? IS NULL OR a.tags GLOB '*' || ? || '*')
+),
+ranked_stories AS (
+  SELECT 
+    *,
+    ROW_NUMBER() OVER (
+      PARTITION BY month
+      ORDER BY descendants DESC
+    ) as rank
+  FROM tagged_stories
+)
+SELECT 
+  month,
+  id,
+  title,
+  descendants as comment_count,
+  score,
+  url,
+  tags
+FROM ranked_stories
+WHERE rank <= 10
+ORDER BY month DESC, descendants DESC;`
+  const monthlyTopNews = await dbManager.query(env.DB, sql, [month, tag, tag]);
   const newsList = await fetchNewsList(env.DB, monthlyTopNews.map((item: any) => ({ item_id: item.id })), locale);
 
-  // 如果是当前月份，缓存6小时，数据需要重新刷新
-  if (month === MONTH_SET[0]) {
-    await env.HN_CACHE.put(month, JSON.stringify(newsList), { expirationTtl: 60 * 60 * 6});
-  } else {
-    await env.HN_CACHE.put(month, JSON.stringify(newsList));
+  if (newsList.length > 0) {
+    // 如果是当前月份，缓存6小时，数据需要重新刷新
+    if (month === MONTH_SET[0]) {
+      await env.HN_CACHE.put(month + "_" + tag + "_" + locale, JSON.stringify(newsList), { expirationTtl: 60 * 60 * 6 });
+    } else {
+      await env.HN_CACHE.put(month + "_" + tag + "_" + locale, JSON.stringify(newsList));
+    }
   }
   return newsList;
 }
@@ -130,6 +148,6 @@ export default {
   getHnItem,
   getAiSummary,
   getDetails,
-  getMonthlyTop,
-  updateMonthlyTopCache,
+  getTopNews,
+  updateTopNewsCache,
 }

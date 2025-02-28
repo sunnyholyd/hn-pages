@@ -8,21 +8,21 @@
     "start": "next start",
     "lint": "next lint",
     "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "npm run pages:build && wrangler pages dev --persist-to '/Users/sunny/Documents/hn-project/hn-backend/.wrangler/state'",
+    "preview": "npm run pages:build && wrangler pages dev --persist-to '/Users/sunny/sunnyd/hn-project/hn-backend/.wrangler/state'",
     "deploy": "npm run pages:build && wrangler pages deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
   },
   "dependencies": {
     "chokidar": "^3.6.0",
-    "next": "14.1.0",
+    "next": "14.2.5",
     "next-intl": "^3.26.3",
     "pnpm": "^9.15.3",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.11.3",
-    "@cloudflare/workers-types": "^4.20240512.0",
+    "@cloudflare/next-on-pages": "^1.13.7",
+    "@cloudflare/workers-types": "^4.20250204.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import dbManager from "@/app/utils/dbManager";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { notFound } from "next/navigation";
 import cache from "@/app/utils/cache";
