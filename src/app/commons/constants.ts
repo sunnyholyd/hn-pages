@@ -8,7 +8,7 @@ export const AI_CN_TABLE = 'ai_cn_items';
 export const ITEM_URL_PREFIX = 'https://news.ycombinator.com/item?id=';
 export const USER_URL_PREFIX = 'https://news.ycombinator.com/user?id=';
 
-export const MONTH_SET = ['2025-02', '2025-01'];
+export const MONTH_SET = ['2025-04', '2025-03', '2025-02', '2025-01'];
 
 export const TAG_SET = ['AI', 'Game', 'Investment'];
 
