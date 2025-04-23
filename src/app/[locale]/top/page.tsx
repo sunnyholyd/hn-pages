@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import NewsList from "@/app/components/NewsList";
 import { useLocale } from "next-intl";
 import TopSelector from "@/app/components/TopSelector";
+import Loading from "@/app/components/Loading";
 import { MONTH_SET } from "@/app/commons/constants";
 
 export const runtime = 'edge';
@@ -16,14 +17,22 @@ export default function Page({
 }) {
   const locale = useLocale();
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { month, tag } = searchParams;
 
   useEffect(() => {
     const fetchData = async () => {
       if (month || tag) {
-        const result = await fetch(`/api/top?month=${month}&tag=${tag}&locale=${locale}`);
-        const data: any = await result.json();
-        setData(data);
+        setIsLoading(true);
+        try {
+          const result = await fetch(`/api/top?month=${month}&tag=${tag}&locale=${locale}`);
+          const data: any = await result.json();
+          setData(data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
     fetchData();
@@ -37,7 +46,11 @@ export default function Page({
         </div>
       </div>
       <div>
-        <NewsList newsList={data} />
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <NewsList newsList={data} />
+        )}
       </div>
     </div>
   );

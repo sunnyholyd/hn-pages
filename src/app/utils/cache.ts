@@ -72,7 +72,7 @@ async function getDetails(env: CloudflareEnv, id: number, locale: string = 'en')
 
 // topNews
 async function getTopNews(month: string, tag: string, locale: string, env: CloudflareEnv): Promise<News[]> {
-  const monthlyTopNews = await env.HN_CACHE.get(month + "_" + tag + "_" + locale, { cacheTtl: 21600 });
+  const monthlyTopNews = await env.HN_CACHE.get(month + "_" + tag + "_" + locale, { cacheTtl: 60 * 60 * 24 });
 
   if (monthlyTopNews) {
     console.log("monthlyTopNews hit cache, return from cache");
@@ -134,7 +134,7 @@ ORDER BY month DESC, descendants DESC;`
   if (newsList.length > 0) {
     // 如果是当前月份，缓存6小时，数据需要重新刷新
     if (month === MONTH_SET[0]) {
-      await env.HN_CACHE.put(month + "_" + tag + "_" + locale, JSON.stringify(newsList), { expirationTtl: 60 * 60 * 6 });
+      await env.HN_CACHE.put(month + "_" + tag + "_" + locale, JSON.stringify(newsList), { expirationTtl: 60 * 60 * 24 });
     } else {
       await env.HN_CACHE.put(month + "_" + tag + "_" + locale, JSON.stringify(newsList));
     }
